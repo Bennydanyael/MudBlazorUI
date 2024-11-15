@@ -12,25 +12,55 @@
 
         </MudIconButton>
         Base App
+        <MudSpacer />
+        <MudStack>
+            <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_customTheme" />
+            <MudToggleIconButton @bind-Toggled="@_isDarkMode"
+            Icon="@Icons.Material.Filled.DarkMode"
+            Color="@Color.Default"
+            ToggledIcon="@Icons.Material.Filled.WbSunny"
+            ToggledColor="@Color.Default" />
+        </MudStack>
+        <MudStack>
+            <MudNavLink Href="/Login" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Login">Login</MudNavLink>
+        </MudStack>
     </MudAppBar>
     <MudDrawer @bind-Open="@_drawerOpen" Elevation="20" Anchor="Anchor.Left">
         <MudDrawerHeader>
-            <MudText Type="Type.h4">Bass App</MudText>
+            <MudText Typo="Typo.h4">Base App</MudText>
         </MudDrawerHeader>
         <MudDrawerContainer>
             <NavMenu />
         </MudDrawerContainer>
     </MudDrawer>
     <MudMainContent>
+        <div class="container" style="margin-left:10px">
         @Body
+        </div>
     </MudMainContent>
 </MudLayout>
 
 @code{
     private bool _drawerOpen = false;
-
+    private bool _isDarkMode;
     private void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
     }
+
+    MudTheme _customTheme = new MudTheme()
+    {
+        PaletteLight = new PaletteLight()
+        {
+            Primary = Colors.DeepPurple.Darken2,
+            Secondary = Colors.Green.Accent4,
+            AppbarBackground = Colors.BlueGray.Darken3
+        },
+        PaletteDark = new PaletteDark()
+        {
+            Primary = Colors.DeepPurple.Darken4,
+            Secondary = Colors.Green.Accent4,
+            AppbarBackground = Colors.BlueGray.Darken3
+        }
+    };
 }
