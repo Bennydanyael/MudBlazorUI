@@ -1,18 +1,49 @@
 ﻿@page "/login"
+
+@using Microsoft.AspNetCore.Authorization
+@using MudBlazorData.Data
+@using MudBlazorDomain.Models
+@using Microsoft.AspNetCore.Components.Authorization
+@using MudBlazorUI.Components.Layout
+@layout LoginLayout
 @attribute [StreamRendering]
+@attribute [AllowAnonymous]
+@inject CustomAuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager _navigate
+@inject Blazored.SessionStorage.ISessionStorageService _sessionStorage
+
 <PageTitle>Login</PageTitle>
 <h3>Login</h3>
-
-<MudStack Row Class="justify-space-between mud-width-full">
+@* <MudStack Row Class="justify-space-between mud-width-full">
     <MudStack Style="width: 300px">
         <MudTextField @bind-Value="Username" Label="Username" Variant="Variant.Text"></MudTextField>
         <MudTextField @bind-Value="Password" Label="Password" Variant="Variant.Text"></MudTextField>
         <MudButton Variant="Variant.Text" Color="Color.Primary">Login</MudButton>
     </MudStack>
 </MudStack>
+ *@
 
+ <MudForm Model="@_user" OnValidSubmit="@ValidateUser()">
+    <MudTextField @bind-Value="@_user.UserName" Label="Username" Variant="Variant.Text"></MudTextField>
+    <MudTextField @bind-Value="@_user.Password" Label="Password" Variant="Variant.Text"></MudTextField>
+    <MudButton Variant="Variant.Text" Color="Color.Primary">Login</MudButton>
+ </MudForm>
 
 @code {
-    private string Username;
-    private string Password;
+    private UserViewModel _user;
+    protected override Task OnInitializedAsync()
+    {
+        _user = new UserViewModel();
+        return base.OnInitializedAsync();
+    }
+
+    public async Task<bool> ValidateUser()
+    {
+        await ((CustomAuthenticationStateProvider)AuthenticationStateProvider).NotifAuthenticated(_user.Email);
+        _navigate.NavigateTo("/");
+
+        await _sessionStorage.SetItemAsync("Email", _user.UserName);
+
+        return await Task.FromResult(true);
+    }
 }

@@ -1,4 +1,11 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using MudBlazorData.Data
+@using MudBlazorDomain.Models
+
+@inherits LayoutComponentBase
+@inject CustomAuthenticationStateProvider _authenticationStateProvider
+@inject NavigationManager _navigate
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 <MudThemeProvider />
 <MudPopoverProvider />
@@ -7,42 +14,64 @@
 
 <MudLayout>
     <MudAppBar>
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" 
-        Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())">
+        <AuthorizeView>
+            <Authorized>
+                <MudIconButton Icon="@Icons.Material.Filled.Menu" 
+                Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())">
 
-        </MudIconButton>
-        Base App
-        <MudSpacer />
-        <MudStack>
-            <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_customTheme" />
-            <MudToggleIconButton @bind-Toggled="@_isDarkMode"
-            Icon="@Icons.Material.Filled.DarkMode"
-            Color="@Color.Default"
-            ToggledIcon="@Icons.Material.Filled.WbSunny"
-            ToggledColor="@Color.Default" />
-        </MudStack>
-        <MudStack>
-            <MudNavLink Href="/Login" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Login">Login</MudNavLink>
-        </MudStack>
+                </MudIconButton>
+                Base App
+                <MudSpacer />
+                <MudStack>
+                    <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_customTheme" />
+                    <MudToggleIconButton @bind-Toggled="@_isDarkMode"
+                    Icon="@Icons.Material.Filled.DarkMode"
+                    Color="@Color.Default"
+                    ToggledIcon="@Icons.Material.Filled.WbSunny"
+                    ToggledColor="@Color.Default" />
+                </MudStack>
+                <MudStack>
+                    <MudNavLink Href="/" @OnClick="(() => Logout())" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Logout">Logout</MudNavLink>
+                </MudStack>
+                </Authorized>
+            <NotAuthorized>
+            <MudStack>
+                <MudNavLink Href="/Login" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Login">Login</MudNavLink>
+            </MudStack>
+            </NotAuthorized>
+        </AuthorizeView>
     </MudAppBar>
-    <MudDrawer @bind-Open="@_drawerOpen" Elevation="20" Anchor="Anchor.Left">
-        <MudDrawerHeader>
-            <MudText Typo="Typo.h4">Base App</MudText>
-        </MudDrawerHeader>
-        <MudDrawerContainer>
-            <NavMenu />
-        </MudDrawerContainer>
-    </MudDrawer>
+    <AuthorizeView>
+        <Authorized>
+        <MudDrawer @bind-Open="@_drawerOpen" Elevation="20" Anchor="Anchor.Left">
+            <MudDrawerHeader>
+                <MudText Typo="Typo.h4">Base App</MudText>
+            </MudDrawerHeader>
+            <MudDrawerContainer>
+                <NavMenu />
+            </MudDrawerContainer>
+        </MudDrawer>
+          </Authorized>
+          </AuthorizeView>
     <MudMainContent>
         <div class="container" style="margin-left:10px">
-        @Body
+            @Body
         </div>
     </MudMainContent>
 </MudLayout>
-
 @code{
     private bool _drawerOpen = false;
     private bool _isDarkMode;
+
+    private UserViewModel _user;
+    protected override async Task OnInitializedAsync()
+    {
+
+        await sessionStorage.SetItemAsync("name", "John Smith");
+        var name = await sessionStorage.GetItemAsync<string>("name");
+        _user = new UserViewModel();
+        await base.OnInitializedAsync();
+    }
     private void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
@@ -63,4 +92,10 @@
             AppbarBackground = Colors.BlueGray.Darken3
         }
     };
+
+    public void Logout()
+    {
+        ((CustomAuthenticationStateProvider)_authenticationStateProvider).Logout();
+        _navigate.NavigateTo("/Login", true);
+    }
 }
