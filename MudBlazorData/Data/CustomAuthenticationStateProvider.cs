@@ -9,11 +9,11 @@ namespace MudBlazorData.Data
 {
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider
     {
-        private ISessionStorageService _sessionStorageService;
-        public CustomAuthenticationStateProvider(ISessionStorageService sessionStorageService)
-        {
-            _sessionStorageService = sessionStorageService;
-        }
+        //private ISessionStorageService _sessionStorageService;
+        //public CustomAuthenticationStateProvider(ISessionStorageService sessionStorageService)
+        //{
+        //    _sessionStorageService = sessionStorageService;
+        //}
         public override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var _identity = new ClaimsIdentity();
@@ -37,7 +37,7 @@ namespace MudBlazorData.Data
 
         public void Logout()
         {
-            _sessionStorageService.RemoveItemAsync("Email");
+            //_sessionStorageService.RemoveItemAsync("Email");
             var _identity = new ClaimsIdentity();
             var _user = new ClaimsPrincipal(_identity);
             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(_user)));

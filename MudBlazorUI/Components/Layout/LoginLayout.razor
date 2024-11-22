@@ -1,11 +1,15 @@
 ﻿@inherits LayoutComponentBase
 
-<cemter>
-<MudStack Class="row-col-12">
-	<br/><br/>
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+<MudMainContent>
 	@Body
-</MudStack>
-</cemter>
+</MudMainContent>
+</MudLayout>
 
 @code {
 

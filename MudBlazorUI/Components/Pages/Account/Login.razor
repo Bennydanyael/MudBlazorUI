@@ -8,12 +8,11 @@
 @layout LoginLayout
 @attribute [StreamRendering]
 @attribute [AllowAnonymous]
-@inject CustomAuthenticationStateProvider AuthenticationStateProvider
+@* @inject CustomAuthenticationStateProvider AuthenticationStateProvider *@
 @inject NavigationManager _navigate
-@inject Blazored.SessionStorage.ISessionStorageService _sessionStorage
+@* @inject Blazored.SessionStorage.ISessionStorageService _sessionStorage *@
 
 <PageTitle>Login</PageTitle>
-<h3>Login</h3>
 @* <MudStack Row Class="justify-space-between mud-width-full">
     <MudStack Style="width: 300px">
         <MudTextField @bind-Value="Username" Label="Username" Variant="Variant.Text"></MudTextField>
@@ -23,11 +22,43 @@
 </MudStack>
  *@
 
- <MudForm Model="@_user" OnValidSubmit="@ValidateUser()">
-    <MudTextField @bind-Value="@_user.UserName" Label="Username" Variant="Variant.Text"></MudTextField>
-    <MudTextField @bind-Value="@_user.Password" Label="Password" Variant="Variant.Text"></MudTextField>
-    <MudButton Variant="Variant.Text" Color="Color.Primary">Login</MudButton>
- </MudForm>
+@* <div class="col-8 card">
+    <div class="col-12 row"> *@
+        <MudTabs Elevation="1" Rounded="true" PanelClass="pa-6">
+            <MudTabPanel Text="Login" ToolTip="ToolTip One" Style="width:50%;border:groove;">
+                 <MudStack Class="justify-space-between mud-width-full">
+            <MudCard Style="width:500px;glyph-orientation-horizontal:revert-layer">
+                        <MudCardContent>
+                             <MudForm Model="@_user" OnValidSubmit="@ValidateUser()">
+                                <MudTextField @bind-Value="@_user.UserName" Label="Username" Variant="Variant.Text"></MudTextField>
+                                    <MudTextField @bind-Value="@_user.Password" Label="Password" Variant="Variant.Text" InputType="@InputType.Password"></MudTextField>
+                            </MudForm>
+                            </MudCardContent>
+                            <MudCardActions>
+                                <MudButton Variant="Variant.Text" Color="Color.Success">Login</MudButton>
+                             </MudCardActions>
+                    </MudCard>
+                </MudStack>
+            </MudTabPanel>
+            <MudTabPanel Text="Register" ToolTip="ToolTip One" Style="width:50%;border:groove">
+                <MudStack Class="justify-space-between mud-width-full">
+                    <MudCard Style="width:500px;">
+                        <MudCardContent>
+                        <MudForm Model="@_user" OnValidSubmit="@ValidateUser()">
+                            <MudTextField @bind-Value="@_user.Email" Label="Email" Variant="Variant.Text"></MudTextField>
+                            <MudTextField @bind-Value="@_user.UserName" Label="Username" Variant="Variant.Text"></MudTextField>
+                            <MudTextField @bind-Value="@_user.Password" Label="Password" Variant="Variant.Text" InputType="@InputType.Password" Adornment="Adornment.End"></MudTextField>
+                        </MudForm>
+                        </MudCardContent>
+                        <MudCardActions>
+                    <MudButton Variant="Variant.Text" Color="Color.Primary" Adornment="Adornment.End">Submit</MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                </MudStack>
+            </MudTabPanel>
+        </MudTabs>
+@*     </div>
+</div> *@
 
 @code {
     private UserViewModel _user;
@@ -39,10 +70,10 @@
 
     public async Task<bool> ValidateUser()
     {
-        await ((CustomAuthenticationStateProvider)AuthenticationStateProvider).NotifAuthenticated(_user.Email);
-        _navigate.NavigateTo("/");
+        // await ((CustomAuthenticationStateProvider)AuthenticationStateProvider).NotifAuthenticated(_user.Email);
+        // _navigate.NavigateTo("/");
 
-        await _sessionStorage.SetItemAsync("Email", _user.UserName);
+        // await _sessionStorage.SetItemAsync("Email", _user.UserName);
 
         return await Task.FromResult(true);
     }

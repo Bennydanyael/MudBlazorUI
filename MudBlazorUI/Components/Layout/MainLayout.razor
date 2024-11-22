@@ -3,9 +3,9 @@
 @using MudBlazorDomain.Models
 
 @inherits LayoutComponentBase
-@inject CustomAuthenticationStateProvider _authenticationStateProvider
+@* @inject CustomAuthenticationStateProvider _authenticationStateProvider *@
 @inject NavigationManager _navigate
-@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@* @inject Blazored.SessionStorage.ISessionStorageService sessionStorage *@
 
 <MudThemeProvider />
 <MudPopoverProvider />
@@ -13,15 +13,13 @@
 <MudSnackbarProvider />
 
 <MudLayout>
+    <AuthorizeView>
+        <Authorized>
     <MudAppBar>
-        <AuthorizeView>
-            <Authorized>
-                <MudIconButton Icon="@Icons.Material.Filled.Menu" 
-                Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())">
-
-                </MudIconButton>
-                Base App
-                <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" 
+        Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"></MudIconButton>
+        Base App
+        <MudSpacer />
                 <MudStack>
                     <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_customTheme" />
                     <MudToggleIconButton @bind-Toggled="@_isDarkMode"
@@ -31,16 +29,21 @@
                     ToggledColor="@Color.Default" />
                 </MudStack>
                 <MudStack>
-                    <MudNavLink Href="/" @OnClick="(() => Logout())" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Logout">Logout</MudNavLink>
+                    <div Class="d-flex justify-space-around flex-wrap mt-4">
+                    <MudBadge Content="100" Color="Color.Primary" Overlap="true" Class="mx-6 my-4">
+                        <MudIcon Icon="@Icons.Material.Filled.Email" Color="Color.Default" />
+                    </MudBadge>
+                    <MudNavLink Href="/" onclick="(() => Logout())" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Logout">Logout</MudNavLink>
+                    </div>
                 </MudStack>
-                </Authorized>
-            <NotAuthorized>
+         @*    <NotAuthorized>
             <MudStack>
                 <MudNavLink Href="/Login" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Login">Login</MudNavLink>
             </MudStack>
-            </NotAuthorized>
-        </AuthorizeView>
-    </MudAppBar>
+            </NotAuthorized> *@
+            </MudAppBar>
+        </Authorized>
+    </AuthorizeView>
     <AuthorizeView>
         <Authorized>
         <MudDrawer @bind-Open="@_drawerOpen" Elevation="20" Anchor="Anchor.Left">
@@ -67,9 +70,10 @@
     protected override async Task OnInitializedAsync()
     {
 
-        await sessionStorage.SetItemAsync("name", "John Smith");
-        var name = await sessionStorage.GetItemAsync<string>("name");
+        // await sessionStorage.SetItemAsync("name", "John Smith");
+        // var name = await sessionStorage.GetItemAsync<string>("name");
         _user = new UserViewModel();
+        // _navigate.NavigateTo("/Login", true);
         await base.OnInitializedAsync();
     }
     private void DrawerToggle()
@@ -95,7 +99,7 @@
 
     public void Logout()
     {
-        ((CustomAuthenticationStateProvider)_authenticationStateProvider).Logout();
-        _navigate.NavigateTo("/Login", true);
+        // ((CustomAuthenticationStateProvider)_authenticationStateProvider).Logout();
+        // _navigate.NavigateTo("/Login", true);
     }
 }

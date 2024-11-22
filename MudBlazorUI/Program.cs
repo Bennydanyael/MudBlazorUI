@@ -14,7 +14,7 @@ builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 builder.Services.AddSingleton<HttpClient>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
-builder.Services.AddBlazoredSessionStorage();
+//builder.Services.AddBlazoredSessionStorage();
 //builder.Services.AddBlazoredSessionStorage(config => {
 //    config.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
 //    config.JsonSerializerOptions.IgnoreNullValues = true;
